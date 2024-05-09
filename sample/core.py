@@ -13,7 +13,7 @@ def calculate_expected_information(combo: tuple, combinations: set):
     # for hint in HINTS:
     #     calculate_information(combo, hint, combinations)
 
-    calculate_information(combo, [1, 1, 0, 0], combinations)
+    calculate_information(combo, [2, 2, 0, 0], combinations)
 
 def calculate_information(combo: tuple, hint: tuple, combinations: set):
     """Calculates the information gained from a guess with a specific
@@ -53,7 +53,10 @@ def calculate_possible_combinations(combo: tuple, hint: tuple,
 
     # Colours are only in the correct spot
     elif not colours_wrong_spot:
-        return
+        for combination in combinations:
+            if common_elements_same_spot(combo, combination) == colours_correct_spot and common_elements(combo, combination) == colours_correct_spot:
+                combinations_remaining.add(combination)
+
     # Some colours are in the correct spot
     else:
         return
@@ -76,6 +79,10 @@ def common_elements(arr1, arr2):
     # Sum up the counts of common elements
     total_common_count = sum(common_counts.values())
     
+    return total_common_count
+
+def common_elements_same_spot(arr1, arr2):
+    total_common_count = sum(x == y for x, y in zip(arr1, arr2))
     return total_common_count
 
 # for combo in COMBINATIONS:
