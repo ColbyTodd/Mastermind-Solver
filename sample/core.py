@@ -26,7 +26,7 @@ def calculate_possible_combinations(combo: tuple, hint: tuple,
     combinations_remaining = set()
     colours_wrong_spot = hint.count(1)
     colours_correct_spot = hint.count(2)
-    
+
     # No colours are correct
     if not colours_wrong_spot and not colours_correct_spot:
         for combination in combinations:
@@ -50,16 +50,11 @@ def calculate_possible_combinations(combo: tuple, hint: tuple,
             if common_elements(combo, combination) == colours_wrong_spot and flag:
                 combinations_remaining.add(combination)
 
-
-    # Colours are only in the correct spot
-    elif not colours_wrong_spot:
-        for combination in combinations:
-            if common_elements_same_spot(combo, combination) == colours_correct_spot and common_elements(combo, combination) == colours_correct_spot:
-                combinations_remaining.add(combination)
-
     # Some colours are in the correct spot
     else:
-        return
+        for combination in combinations:
+            if common_elements_same_spot(combo, combination) == colours_correct_spot and common_elements(combo, combination) == colours_correct_spot + colours_wrong_spot:
+                combinations_remaining.add(combination)
 
     print(combinations_remaining)
     return combinations_remaining
@@ -68,17 +63,17 @@ def common_elements(arr1, arr2):
     # Count occurrences of each element in both arrays
     counter1 = Counter(arr1)
     counter2 = Counter(arr2)
-    
+
     # Calculate the intersection of keys (common elements)
     common_keys = counter1.keys() & counter2.keys()
-    
+
     # Calculate the minimum occurrence of each common element
     common_counts = {key: min(counter1[key], counter2[key])
                         for key in common_keys}
-    
+
     # Sum up the counts of common elements
     total_common_count = sum(common_counts.values())
-    
+
     return total_common_count
 
 def common_elements_same_spot(arr1, arr2):
