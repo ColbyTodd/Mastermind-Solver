@@ -9,4 +9,4 @@ COMBINATIONS = set(product(COLOURS, repeat = COLUMNS))
 calculator = Calculator()
 
 for combo in COMBINATIONS:
-    calculator.calculate_expected_information(combo, COMBINATIONS)
+    calculator.calculate_expected_information(combo, COMBINATIONS, HINTS)

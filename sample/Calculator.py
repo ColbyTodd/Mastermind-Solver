@@ -1,26 +1,33 @@
 from collections import Counter
+import math
 
 class Calculator:
 
     def __init__(self):
         return
 
-    def calculate_expected_information(self, combo: tuple, combinations: set):
+    def calculate_expected_information(self, combo: tuple, combinations: set, hints: set):
         """Calculates the expected amount of information gained from a 
         given guess.""" 
+        sum = 0
+        count = 0
+        for hint in hints:
+            sum = sum + self.calculate_information(combo, hint, combinations)
+            count += 1
+        
+        return -sum/count
 
-        # for hint in HINTS:
-        #     calculate_information(combo, hint, combinations)
 
-        self.calculate_information(combo, [2, 2, 0, 0], combinations)
-
-    def calculate_information(self, combo: tuple, hint: tuple, combinations: set):
+    def calculate_information(self, combo: tuple, combinations: set, hint: tuple):
         """Calculates the information gained from a guess with a specific
         hint."""
-        self.calculate_possible_combinations(combo, hint, combinations)
+        possible_combinations = self.calculate_possible_combinations(combo, hint, combinations)
+        if len(possible_combinations) / len(combinations) > 0:
+            return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
+        
+        return 0
 
-    def calculate_possible_combinations(self, combo: tuple, hint: tuple, 
-                                            combinations: set):
+    def calculate_possible_combinations(self, combo: tuple, combinations: set, hint: tuple):
         """Calculate combinations that are still possible."""
         combinations_remaining = set()
         colours_wrong_spot = hint.count(1)
