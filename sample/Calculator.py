@@ -55,10 +55,9 @@ class Calculator:
                 if self.common_elements_same_spot(combo, combination) == colours_correct_spot and self.common_elements(combo, combination) == colours_correct_spot + colours_wrong_spot:
                     combinations_remaining.add(combination)
 
-        print(combinations_remaining)
         return combinations_remaining
 
-    def common_elements(arr1, arr2):
+    def common_elements(self, arr1, arr2):
         # Count occurrences of each element in both arrays
         counter1 = Counter(arr1)
         counter2 = Counter(arr2)
@@ -75,6 +74,6 @@ class Calculator:
 
         return total_common_count
 
-    def common_elements_same_spot(arr1, arr2):
+    def common_elements_same_spot(self, arr1, arr2):
         total_common_count = sum(x == y for x, y in zip(arr1, arr2))
         return total_common_count
