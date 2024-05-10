@@ -10,18 +10,16 @@ class Calculator:
         """Calculates the expected amount of information gained from a 
         given guess.""" 
         sum = 0
-        count = 0
         for hint in hints:
-            sum = sum + self.calculate_information(combo, hint, combinations)
-            count += 1
+            sum = sum + self.calculate_information(combo, combinations, hint)
         
-        return -sum/count
+        return sum
 
 
     def calculate_information(self, combo: tuple, combinations: set, hint: tuple):
         """Calculates the information gained from a guess with a specific
         hint."""
-        possible_combinations = self.calculate_possible_combinations(combo, hint, combinations)
+        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
         if len(possible_combinations) / len(combinations) > 0:
             return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
         
