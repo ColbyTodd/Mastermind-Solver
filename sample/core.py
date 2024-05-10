@@ -8,10 +8,14 @@ COMBINATIONS = set(product(COLOURS, repeat = COLUMNS))
 
 def find_best_combo():
     calculator = Calculator()
+    colours = set()
+    for i in range (1, COLUMNS + 1):
+        colours.add(i)
+    combinations = set(product(colours, repeat = COLUMNS))
     best_combo = ()
     max_expected_information = 0
 
-    for combo in COMBINATIONS:
+    for combo in combinations:
         expected_information = calculator.calculate_expected_information(combo, COMBINATIONS, HINTS)
         
         if expected_information > max_expected_information:
