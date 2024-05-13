@@ -15,3 +15,13 @@ def test_commmon_elements_same_spot():
 
     # All are the same
     assert(CALCULATOR.common_elements_same_spot((1, 2, 1, 1), (1, 2, 1, 1)) == 4)
+
+def test_common_elements():
+    # Basic Test
+    assert(CALCULATOR.common_elements((1, 2, 1, 4), (1, 2, 3, 1)) == 3)
+    
+    # None are the same
+    assert(CALCULATOR.common_elements((0, 0, 0, 0), (1, 1, 1, 1)) == 0)
+
+    # All are the same
+    assert(CALCULATOR.common_elements((1, 2, 1, 1), (1, 2, 1, 1)) == 4)
