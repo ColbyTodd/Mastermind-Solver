@@ -6,7 +6,7 @@ class Calculator:
     def __init__(self):
         return
 
-    def calculate_expected_information(self, combo: tuple, combinations: set, hints: set):
+    def calculate_expected_information(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int]):
         """Calculates the expected amount of information gained from a 
         given guess.""" 
         sum = 0
@@ -16,7 +16,7 @@ class Calculator:
         return sum
 
 
-    def calculate_information(self, combo: tuple, combinations: set, hint: tuple):
+    def calculate_information(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]):
         """Calculates the information gained from a guess with a specific
         hint."""
         possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
@@ -25,7 +25,7 @@ class Calculator:
         
         return 0
 
-    def calculate_possible_combinations(self, combo: tuple, combinations: set, hint: tuple):
+    def calculate_possible_combinations(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]):
         """Calculate combinations that are still possible."""
         combinations_remaining = set()
         colours_wrong_spot = hint.count(1)
@@ -62,7 +62,7 @@ class Calculator:
 
         return combinations_remaining
 
-    def common_elements(self, arr1, arr2):
+    def common_elements(self, arr1: list, arr2: list):
         # Count occurrences of each element in both arrays
         counter1 = Counter(arr1)
         counter2 = Counter(arr2)
@@ -79,6 +79,6 @@ class Calculator:
 
         return total_common_count
 
-    def common_elements_same_spot(self, arr1, arr2):
+    def common_elements_same_spot(self, arr1: list, arr2: list):
         total_common_count = sum(x == y for x, y in zip(arr1, arr2))
         return total_common_count
