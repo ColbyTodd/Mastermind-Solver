@@ -1,5 +1,6 @@
 import pytest
 from context import Calculator
+import math
 
 CALCULATOR = Calculator()
 
@@ -50,3 +51,10 @@ def test_calculate_all_possible_combinations():
 
     # Three in the wrong spot
     assert(CALCULATOR.calculate_possible_combinations((1, 2, 1, 1), [(1, 2, 3, 4), (1, 1, 2, 3), (2, 3, 4, 5), (1, 1, 1, 2), (1, 1, 1, 1), (2, 1, 3, 4), (2, 3, 1, 4)], (0, 1, 1, 1)) == set())
+
+def test_calculate_information():
+    # Valid hint
+    assert(CALCULATOR.calculate_information((1, 1, 1, 1), [(1, 2, 3, 4), (1, 1, 2, 3), (2, 3, 4, 5), (1, 1, 1, 2), (1, 1, 1, 1), (2, 1, 3, 4)], (0, 0, 0, 2)) == 2 / 6 * math.log2(6 / 2))
+
+    # Invalid hint
+    assert(CALCULATOR.calculate_information((1, 2, 1, 1), [(1, 2, 3, 4), (1, 1, 2, 3), (2, 3, 4, 5), (1, 1, 1, 2), (1, 1, 1, 1), (2, 1, 3, 4), (2, 3, 1, 4)], (0, 1, 1, 1)) == 0)
