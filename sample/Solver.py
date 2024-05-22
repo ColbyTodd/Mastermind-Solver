@@ -11,10 +11,12 @@ class Solver:
     
     def find_best_combo(self) -> tuple[int]:
         calculator = Calculator()
-        colours = set()
-        for i in range (1, self.columns + 1):
-            colours.add(i)
-        combinations = set(product(colours, repeat = self.columns))
+        combinations = set()
+        if len(self.colours) > self.columns:
+            combination = [1 for i in range(self.columns)]
+            for i in range(self.columns):
+                combination[i] += i
+                combinations.add(tuple(combination))
         best_combo = ()
         max_expected_information = 0
 
@@ -31,10 +33,12 @@ class Solver:
 
     def find_best_combo_with_lookahead(self, lookahead: int) -> tuple[int]:
         calculator = Calculator()
-        colours = set()
-        for i in range (1, self.columns + 1):
-            colours.add(i)
-        combinations = set(product(colours, repeat = self.columns))
+        combinations = set()
+        if len(self.colours) > self.columns:
+            combination = [1 for i in range(self.columns)]
+            for i in range(self.columns):
+                combination[i] += i
+                combinations.add(tuple(combination))
         best_combo = ()
         max_expected_information = 0
 
