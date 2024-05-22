@@ -7,4 +7,4 @@ COMBINATIONS = set(product(COLOURS, repeat = COLUMNS))
 HINTS = set(combinations_with_replacement(set((0, 1, 2)), COLUMNS))
 
 solver = Solver(COLUMNS, COLOURS, COMBINATIONS, HINTS)
-solver.find_best_combo()
+solver.find_best_combo_with_lookahead(2)

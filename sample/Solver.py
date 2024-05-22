@@ -29,7 +29,7 @@ class Solver:
 
         return best_combo
 
-    def find_best_combo_with_lookahead(self) -> tuple[int]:
+    def find_best_combo_with_lookahead(self, lookahead: int) -> tuple[int]:
         calculator = Calculator()
         colours = set()
         for i in range (1, self.columns + 1):
@@ -39,7 +39,7 @@ class Solver:
         max_expected_information = 0
 
         for combo in combinations:
-            expected_information = calculator.calculate_expected_information(combo, self.combinations, self.hints)
+            expected_information = calculator.calculate_expected_information_with_lookahead(combo, self.combinations, self.hints, lookahead)
             
             if expected_information > max_expected_information:
                 best_combo = combo

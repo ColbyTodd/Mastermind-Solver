@@ -5,13 +5,42 @@ class Calculator:
 
     def __init__(self):
         return
+    
+    def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int],  lookahead: int) -> float:
+        """Calculates the expected amount of information gained from a 
+        given guess.""" 
+        sum = 0
+        if not lookahead:
+            return sum
+
+        for hint in hints:
+            sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, lookahead)
+        
+        return sum
+
+
+    def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], lookahead: int) -> float:
+        """Calculates the information gained from a guess with a specific
+        hint."""
+        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
+
+        if len(possible_combinations) == 1:
+            return 0
+
+        if len(possible_combinations) / len(combinations) > 0:
+            sum = 0
+            for combo in possible_combinations: 
+                sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, lookahead - 1)
+            return len(possible_combinations) / len(combinations) * (math.log2(len(combinations) / len(possible_combinations)) + sum)
+        
+        return 0
 
     def calculate_expected_information(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int]) -> float:
         """Calculates the expected amount of information gained from a 
         given guess.""" 
         sum = 0
         for hint in hints:
-            sum = sum + self.calculate_information(combo, combinations, hint)
+            sum += self.calculate_information(combo, combinations, hint)
         
         return sum
 
