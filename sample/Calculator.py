@@ -6,7 +6,7 @@ class Calculator:
     def __init__(self):
         return
     
-    def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int],  lookahead: int) -> float:
+    def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int], probY: float, lookahead: int) -> float:
         """Calculates the expected amount of information gained from a 
         given guess.""" 
         sum = 0
@@ -14,24 +14,28 @@ class Calculator:
             return sum
 
         for hint in hints:
-            sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, lookahead)
+            sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, probY, lookahead)
         
         return sum
 
 
-    def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], lookahead: int) -> float:
+    def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], probY: float, lookahead: int) -> float:
         """Calculates the information gained from a guess with a specific
         hint."""
+        sum = 0
         possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
+        probX = len(possible_combinations) / len(combinations)
+        probXGivenY = probX * probY
 
         if len(possible_combinations) == 1:
             return 0
 
         if len(possible_combinations) / len(combinations) > 0:
-            sum = 0
-            for combo in possible_combinations: 
-                sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, lookahead - 1)
-            return len(possible_combinations) / len(combinations) * (math.log2(len(combinations) / len(possible_combinations)) + sum)
+            if lookahead == 1:
+                return probXGivenY * math.log(1/probXGivenY)
+            for combo in possible_combinations:
+                sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, probXGivenY, lookahead - 1)
+            return probXGivenY * sum
         
         return 0
 

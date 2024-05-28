@@ -41,7 +41,7 @@ class Solver:
         max_expected_information = 0
 
         for combo in combinations:
-            expected_information = calculator.calculate_expected_information_with_lookahead(combo, self.combinations, self.hints, lookahead)
+            expected_information = calculator.calculate_expected_information_with_lookahead(combo, self.combinations, self.hints, 1, lookahead)
             
             if expected_information > max_expected_information:
                 best_combo = combo
