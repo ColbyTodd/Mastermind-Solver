@@ -6,38 +6,37 @@ class Calculator:
     def __init__(self):
         return
     
-    def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int], probY: float, lookahead: int) -> float:
-        """Calculates the expected amount of information gained from a 
-        given guess.""" 
-        sum = 0
-        if not lookahead:
-            return sum
+    # Lookahead does not work as only some hints will be valid, need to figure out how to figure out what hints are valid
+    # def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int], lookahead: int) -> float:
+    #     """Calculates the expected amount of information gained from a 
+    #     given guess.""" 
+    #     sum = 0
+    #     if not lookahead:
+    #         return sum
 
-        for hint in hints:
-            sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, probY, lookahead)
+    #     for hint in hints:
+    #         sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, lookahead)
         
-        return sum
+    #     return sum
 
 
-    def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], probY: float, lookahead: int) -> float:
-        """Calculates the information gained from a guess with a specific
-        hint."""
-        sum = 0
-        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
-        probX = len(possible_combinations) / len(combinations)
-        probXGivenY = probX * probY
+    # def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], lookahead: int) -> float:
+    #     """Calculates the information gained from a guess with a specific
+    #     hint."""
+    #     sum = 0
+    #     possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
+    #     probX = len(possible_combinations) / len(combinations)
+    #     if len(possible_combinations) == 1:
+    #         return 0
 
-        if len(possible_combinations) == 1:
-            return 0
-
-        if len(possible_combinations) / len(combinations) > 0:
-            if lookahead == 1:
-                return probXGivenY * math.log(1/probXGivenY)
-            for combo in possible_combinations:
-                sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, probXGivenY, lookahead - 1)
-            return probXGivenY * sum
+    #     if len(possible_combinations) / len(combinations) > 0:
+    #         if lookahead == 1:
+    #             return probX * math.log2(1/probX)
+    #         for combo in possible_combinations:
+    #             sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, lookahead - 1)
+    #         return probX * sum / len(possible_combinations)
         
-        return 0
+    #     return 0
 
     def calculate_expected_information(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int]) -> float:
         """Calculates the expected amount of information gained from a 
