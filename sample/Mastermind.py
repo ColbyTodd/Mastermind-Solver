@@ -9,6 +9,7 @@ class mastermind:
         ans =  list(self.ans)
         n = len(guess)
         if guess == ans:
+            # This means the answer has been found
             return (3)
         
         for i in range(n):
