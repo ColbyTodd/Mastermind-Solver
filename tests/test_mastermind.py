@@ -1,7 +1,7 @@
-from context import mastermind
+from context import Mastermind
 
 def test_hint():
-    game = mastermind((1, 2, 3, 4))
+    game = Mastermind((1, 2, 3, 4))
     assert(game.hint((1, 2, 3, 1)) == (2, 2, 2))
 
     assert(game.hint((1, 2, 3, 4)) == (3))
