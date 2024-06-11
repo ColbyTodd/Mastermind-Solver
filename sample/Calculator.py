@@ -5,7 +5,7 @@ class Calculator:
 
     def __init__(self):
         return
-    
+
     # Lookahead does not work as only some hints will be valid, need to figure out how to figure out what hints are valid
     # def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int], lookahead: int) -> float:
     #     """Calculates the expected amount of information gained from a 
@@ -18,7 +18,6 @@ class Calculator:
     #         sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, lookahead)
         
     #     return sum
-
 
     # def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], lookahead: int) -> float:
     #     """Calculates the information gained from a guess with a specific
@@ -35,7 +34,7 @@ class Calculator:
     #         for combo in possible_combinations:
     #             sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, lookahead - 1)
     #         return probX * sum / len(possible_combinations)
-        
+
     #     return 0
 
     def calculate_expected_information(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int]) -> float:
@@ -44,9 +43,8 @@ class Calculator:
         sum = 0
         for hint in hints:
             sum += self.calculate_information(combo, combinations, hint)
-        
-        return sum
 
+        return sum
 
     def calculate_information(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> float:
         """Calculates the information gained from a guess with a specific
@@ -54,7 +52,7 @@ class Calculator:
         possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
         if len(possible_combinations) / len(combinations) > 0:
             return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
-        
+
         return 0
 
     def calculate_possible_combinations(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> set[tuple[int]]:
