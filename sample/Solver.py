@@ -43,7 +43,7 @@ class Solver:
         max_expected_information = 0
 
         for combo in combinations:
-            expected_information = calculator.calculate_information(combo, self.combinations, mastermind.hint(combo))
+            expected_information = calculator.calculate_information_with_hint(combo, self.combinations, mastermind.hint(combo))
             
             if expected_information > max_expected_information:
                 best_combo = combo

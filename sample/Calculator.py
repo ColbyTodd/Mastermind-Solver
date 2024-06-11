@@ -47,11 +47,19 @@ class Calculator:
         return sum
 
     def calculate_information(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> float:
+        """Calculates the information gained from a guess for all hints."""
+        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
+        if len(possible_combinations) / len(combinations) > 0:
+            return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
+
+        return 0
+    
+    def calculate_information_with_hint(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> float:
         """Calculates the information gained from a guess with a specific
         hint."""
         possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
         if len(possible_combinations) / len(combinations) > 0:
-            return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
+            return math.log2(len(combinations) / len(possible_combinations))
 
         return 0
 
