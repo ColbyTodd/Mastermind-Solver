@@ -12,6 +12,6 @@ Mastermind Solver is a tool to solve a [mastermind board game](https://en.wikipe
 2. Run core.py
 
 ## To Do
-[] Create functionality to allow solving of puzzles
-[] Create lookahead functionality
-[] Optimize as much as possible
+- [ ] Create functionality to allow solving of puzzles
+- [ ] Create lookahead functionality
+- [ ] Optimize as much as possible
