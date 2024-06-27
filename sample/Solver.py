@@ -31,14 +31,14 @@ class Solver:
 
         return best_combo
     
-    def find_best_combo_with_hint(self, ans: tuple[int]) -> tuple[int]:
+    def find_best_overall_combo_with_hint(self, ans: tuple[int]) -> tuple[int]:
         mastermind = Mastermind(ans)
         calculator = Calculator()
-        # combinations = set()
-        # combination = [1 for i in range(self.columns)]
-        # for i in range(min(self.columns, len(self.colours))):
-        #     combination[i] += i
-        #     combinations.add(tuple(combination))
+        combinations = set()
+        combination = [1 for i in range(self.columns)]
+        for i in range(min(self.columns, len(self.colours))):
+            combination[i] += i
+            combinations.add(tuple(combination))
         best_combo = ()
         max_expected_information = 0
 
@@ -51,10 +51,28 @@ class Solver:
 
         return best_combo
     
-    def find_best_expected_combo(self):
-        for combo in self.combinations:
-            self.find_best_combo_with_hint(combo)
+    def find_best_overall_combo_with_hint(self, ans: tuple[int], information) -> tuple[int]:
+        mastermind = Mastermind(ans)
+        calculator = Calculator()
+        # combinations = set()
+        # combination = [1 for i in range(self.columns)]
+        # for i in range(min(self.columns, len(self.colours))):
+        #     combination[i] += i
+        #     combinations.add(tuple(combination))
+        # best_combo = ()
+        # max_expected_information = 0
 
+        for combo in self.combinations:
+            information[combo] += calculator.calculate_information_with_hint(combo, self.combinations, mastermind.hint(combo))
+
+        return information
+
+    def find_best_expected_combo(self):
+        information = {combo: 0 for combo in self.combinations}
+        for combo in self.combinations:
+            self.find_best_overall_combo_with_hint(combo, information)
+
+        return max(information, key=information.get)
 
     # def find_best_combo_with_lookahead(self, lookahead: int) -> tuple[int]:
     #     calculator = Calculator()
