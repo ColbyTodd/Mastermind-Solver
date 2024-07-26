@@ -27,23 +27,16 @@ class Solver:
                 best_combo = combo
                 max_expected_information = expected_information
 
-        print("Best combo = " + str(best_combo) + "\nExpected information = " + str(max_expected_information))
-
         return best_combo
     
-    def find_best_overall_combo_with_hint(self, ans: tuple[int]) -> tuple[int]:
+    def find_best_combo_with_hint(self, ans: tuple[int], combinations_left: set[tuple[int]]) -> tuple[int]:
         mastermind = Mastermind(ans)
         calculator = Calculator()
-        combinations = set()
-        combination = [1 for i in range(self.columns)]
-        for i in range(min(self.columns, len(self.colours))):
-            combination[i] += i
-            combinations.add(tuple(combination))
         best_combo = ()
         max_expected_information = 0
 
         for combo in self.combinations:
-            expected_information = calculator.calculate_information_with_hint(combo, self.combinations, mastermind.hint(combo))
+            expected_information = calculator.calculate_information_with_hint(combo, combinations_left, mastermind.hint(combo))
             
             if expected_information > max_expected_information:
                 best_combo = combo
@@ -66,11 +59,22 @@ class Solver:
             information[combo] += calculator.calculate_information_with_hint(combo, self.combinations, mastermind.hint(combo))
 
         return information
+    
+    def calculate_number_of_guesses(self, ans: tuple[int], combo: tuple[int], combinations: set[tuple[int]]) -> int:
+        mastermind = Mastermind(ans)
+        calculator = Calculator()
+        guesses = 0
+        while combo != ans:
+            combo = self.find_best_combo_with_hint(ans, combinations)
+            combinations = calculator.calculate_possible_combinations(combo, combinations, mastermind.hint(combo))
+            guesses += 1
+
+        return guesses
 
     def find_best_expected_combo(self):
         information = {combo: 0 for combo in self.combinations}
         for combo in self.combinations:
-            self.find_best_overall_combo_with_hint(combo, information)
+            information += self.calculate_number_of_guesses((1, 1, 1, 1), combo, self.combinations)
 
         return max(information, key=information.get)
 

@@ -7,4 +7,4 @@ COMBINATIONS = set(product(COLOURS, repeat = COLUMNS))
 HINTS = set(combinations_with_replacement(set((0, 1, 2)), COLUMNS))
 
 solver = Solver(COLUMNS, COLOURS, COMBINATIONS, HINTS)
-print(solver.find_best_expected_combo())
+print(solver.calculate_number_of_guesses((1,1,1,1), (1, 1, 2, 2), COMBINATIONS))
