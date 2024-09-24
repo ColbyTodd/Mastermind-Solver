@@ -4,7 +4,7 @@ class Mastermind:
         self.ans = ans
     
     def hint(self, guess: tuple[int]) -> tuple[int]:
-        hints = []
+        hint = []
         guess = list(guess)
         ans =  list(self.ans)
         n = len(guess)
@@ -14,15 +14,15 @@ class Mastermind:
         
         for i in range(n):
             if guess[i] == ans[i]:
-                hints.append(2)
+                hint.append(2)
                 guess[i] = -1
                 ans[i] = -1
         
         for i in range(n):
             if guess[i] != -1 and guess[i] in ans:
                 ans.remove(guess[i])
-                hints.append(1)
+                hint.append(1)
         
-        hints.extend([0] * (n - len(hints)))
+        hint.extend([0] * (n - len(hint)))
         
-        return tuple(hints)
+        return tuple(hint)
