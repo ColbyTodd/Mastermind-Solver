@@ -69,7 +69,7 @@ class Solver:
         mastermind = self.mastermind
         calculator = self.calculator
         if not combo:
-            combo = self.find_best_combo_with_hint(combinations)
+            combo = self.find_best_combo()
         hint = mastermind.hint(combo)
         guesses = 1
         while hint != ((2,) * len(combo)):
