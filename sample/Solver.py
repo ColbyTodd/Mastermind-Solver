@@ -4,14 +4,16 @@ from Mastermind import Mastermind
 
 class Solver:
 
-    def __init__(self, columns: int, colours: set[int], combinations: set[tuple[int]], hints: set[tuple[int]]) -> None:
+    def __init__(self, columns: int, colours: set[int], combinations: set[tuple[int]], hints: set[tuple[int]], ans: tuple[int]) -> None:
         self.columns = columns
         self.colours = colours
         self.combinations = combinations
         self.hints = hints
+        self.mastermind = Mastermind(ans)
+        self.calculator = Calculator()
     
     def find_best_combo(self) -> tuple[int]:
-        calculator = Calculator()
+        calculator = self.calculator
         combinations = set()
         combination = [1 for i in range(self.columns)]
         for i in range(min(self.columns, len(self.colours))):
@@ -29,11 +31,14 @@ class Solver:
 
         return best_combo
     
-    def find_best_combo_with_hint(self, ans: tuple[int], combinations_left: set[tuple[int]]) -> tuple[int]:
-        mastermind = Mastermind(ans)
-        calculator = Calculator()
+    def find_best_combo_with_hint(self, combinations_left: set[tuple[int]]) -> tuple[int]:
+        mastermind = self.mastermind
+        calculator = self.calculator
         best_combo = ()
         max_expected_information = 0
+
+        if len(combinations_left) == 1:
+            return combinations_left.pop()
 
         for combo in self.combinations:
             expected_information = calculator.calculate_information_with_hint(combo, combinations_left, mastermind.hint(combo))
@@ -44,9 +49,9 @@ class Solver:
 
         return best_combo
     
-    def find_best_overall_combo_with_hint(self, ans: tuple[int], information) -> tuple[int]:
-        mastermind = Mastermind(ans)
-        calculator = Calculator()
+    def find_best_overall_combo_with_hint(self, information) -> tuple[int]:
+        mastermind = self.mastermind
+        calculator = self.calculator
         # combinations = set()
         # combination = [1 for i in range(self.columns)]
         # for i in range(min(self.columns, len(self.colours))):
@@ -60,13 +65,17 @@ class Solver:
 
         return information
     
-    def calculate_number_of_guesses(self, ans: tuple[int], combo: tuple[int], combinations: set[tuple[int]]) -> int:
-        mastermind = Mastermind(ans)
-        calculator = Calculator()
-        guesses = 0
-        while combo != ans:
-            combo = self.find_best_combo_with_hint(ans, combinations)
-            combinations = calculator.calculate_possible_combinations(combo, combinations, mastermind.hint(combo))
+    def calculate_number_of_guesses(self, combinations: set[tuple[int]], combo: tuple[int]=None) -> int:
+        mastermind = self.mastermind
+        calculator = self.calculator
+        if not combo:
+            combo = self.find_best_combo_with_hint(combinations)
+        hint = mastermind.hint(combo)
+        guesses = 1
+        while hint != ((2,) * len(combo)):
+            combinations = calculator.calculate_possible_combinations(combo, combinations, hint)
+            combo = self.find_best_combo_with_hint(combinations)
+            hint = mastermind.hint(combo)
             guesses += 1
 
         return guesses
