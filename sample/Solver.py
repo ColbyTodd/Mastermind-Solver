@@ -9,22 +9,22 @@ class Solver:
         self.colours = colours
         self.combinations = combinations
         self.hints = hints
+        self.ans = ans
         self.mastermind = Mastermind(ans)
         self.calculator = Calculator()
     
-    def find_best_combo(self) -> tuple[int]:
+    def find_best_combo(self, combinations_left: set[tuple[int]]) -> tuple[int]:
         calculator = self.calculator
-        combinations = set()
-        combination = [1 for i in range(self.columns)]
-        for i in range(min(self.columns, len(self.colours))):
-            combination[i] += i
-            combinations.add(tuple(combination))
+        combinations = self.combinations
         best_combo = ()
         max_expected_information = 0
 
+        if len(combinations_left) == 1:
+            return combinations_left.pop()
+
         for combo in combinations:
-            expected_information = calculator.calculate_expected_information(combo, self.combinations, self.hints)
-            
+            expected_information = calculator.calculate_expected_information(combo, combinations_left, self.hints)
+
             if expected_information > max_expected_information:
                 best_combo = combo
                 max_expected_information = expected_information
@@ -69,13 +69,12 @@ class Solver:
         mastermind = self.mastermind
         calculator = self.calculator
         if not combo:
-            combo = self.find_best_combo()
-        hint = mastermind.hint(combo)
+            combo = self.find_best_combo(combinations)
         guesses = 1
-        while hint != ((2,) * len(combo)):
-            combinations = calculator.calculate_possible_combinations(combo, combinations, hint)
-            combo = self.find_best_combo_with_hint(combinations)
+        while combo != self.ans:
             hint = mastermind.hint(combo)
+            combinations = calculator.calculate_possible_combinations(combo, combinations, hint)
+            combo = self.find_best_combo(combinations)
             guesses += 1
 
         return guesses
