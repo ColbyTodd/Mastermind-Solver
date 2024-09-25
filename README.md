@@ -13,6 +13,7 @@ Mastermind Solver is a tool to solve a [mastermind board game](https://en.wikipe
 
 ## To Do
 - [x] Create functionality to allow solving of puzzles
-- [ ] Find out where the program is cheating
+- [x] Find out where the program is cheating
+- [ ] Find out why the program is not giving the optimal expected number of guesses
 - [ ] Create lookahead functionality
 - [ ] Optimize as much as possible
