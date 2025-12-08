@@ -1,122 +1,62 @@
-from collections import Counter
 import math
 
 class Calculator:
-
     def __init__(self):
-        return
+        pass
 
-    # Lookahead does not work as only some hints will be valid, need to figure out how to figure out what hints are valid
-    # def calculate_expected_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int], lookahead: int) -> float:
-    #     """Calculates the expected amount of information gained from a 
-    #     given guess.""" 
-    #     sum = 0
-    #     if not lookahead:
-    #         return sum
-
-    #     for hint in hints:
-    #         sum += self.calculate_information_with_lookahead(combo, combinations, hint, hints, lookahead)
+    def score(self, guess: tuple[int, ...], secret: tuple[int, ...]) -> tuple[int, ...]:
+        """Compute exact Mastermind feedback matching Mastermind.hint logic."""
+        n = len(guess)
+        guess_list = list(guess)
+        secret_list = list(secret)
         
-    #     return sum
+        # First pass: exact position matches (black pins = 2s)
+        hint = []
+        for i in range(n):
+            if guess_list[i] == secret_list[i]:
+                hint.append(2)
+                guess_list[i] = -1
+                secret_list[i] = -1
+        
+        # Second pass: color matches in wrong position (white pins = 1s)
+        for i in range(n):
+            if guess_list[i] != -1 and guess_list[i] in secret_list:
+                secret_list.remove(guess_list[i])
+                hint.append(1)
+        
+        # Fill remaining with 0s
+        hint.extend([0] * (n - len(hint)))
+        return tuple(hint)
 
-    # def calculate_information_with_lookahead(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int], hints: set[int], lookahead: int) -> float:
-    #     """Calculates the information gained from a guess with a specific
-    #     hint."""
-    #     sum = 0
-    #     possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
-    #     probX = len(possible_combinations) / len(combinations)
-    #     if len(possible_combinations) == 1:
-    #         return 0
+    def calculate_possible_combinations(self, combo: tuple[int, ...], 
+                                      combinations: set[tuple[int, ...]], 
+                                      hint: tuple[int, ...]) -> set[tuple[int, ...]]:
+        """Filter using exact score match."""
+        return {c for c in combinations if self.score(combo, c) == hint}
 
-    #     if len(possible_combinations) / len(combinations) > 0:
-    #         if lookahead == 1:
-    #             return probX * math.log2(1/probX)
-    #         for combo in possible_combinations:
-    #             sum += self.calculate_expected_information_with_lookahead(combo, possible_combinations, hints, lookahead - 1)
-    #         return probX * sum / len(possible_combinations)
+    def calculate_expected_information(self, combo: tuple[int, ...], 
+                                     combinations: set[tuple[int, ...]]) -> float:
+        """True entropy over actual feedback distribution."""
+        feedback_counts = {}
+        for secret in combinations:
+            fb = self.score(combo, secret)
+            feedback_counts[fb] = feedback_counts.get(fb, 0) + 1
+        
+        total = len(combinations)
+        if total == 0 or total == 1:
+            return 0.0
+        entropy = 0.0
+        for count in feedback_counts.values():
+            p = count / total
+            entropy -= p * math.log2(p)
+        return entropy
 
-    #     return 0
-
-    def calculate_expected_information(self, combo: tuple[int], combinations: set[tuple[int]], hints: set[int]) -> float:
-        """Calculates the expected amount of information gained from a 
-        given guess.""" 
-        sum = 0
-        for hint in hints:
-            sum += self.calculate_information(combo, combinations, hint)
-
-        return sum
-
-    def calculate_information(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> float:
-        """Calculates the information gained from a guess for all hints."""
-        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
-        if len(possible_combinations) / len(combinations) > 0:
-            return len(possible_combinations) / len(combinations) * math.log2(len(combinations) / len(possible_combinations))
-
-        return 0
-    
-    def calculate_information_with_hint(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> float:
-        """Calculates the information gained from a guess with a specific
-        hint."""
-        possible_combinations = self.calculate_possible_combinations(combo, combinations, hint)
-        if len(possible_combinations) / len(combinations) > 0:
-            return math.log2(len(combinations) / len(possible_combinations))
-
-        return 0
-
-    def calculate_possible_combinations(self, combo: tuple[int], combinations: set[tuple[int]], hint: tuple[int]) -> set[tuple[int]]:
-        """Calculate combinations that are still possible."""
-        combinations_remaining = set()
-        colours_wrong_spot = hint.count(1)
-        colours_correct_spot = hint.count(2)
-
-        # No colours are correct
-        if not colours_wrong_spot and not colours_correct_spot:
-            for combination in combinations:
-                if len(set(combo).intersection(combination)) == 0:
-                    combinations_remaining.add(combination)
-
-        # No colours are in the correct spot
-        elif not colours_correct_spot:
-            # This needs to find combinations that contain exactly the same
-            # number of common colours as colours_wrong_spot, with neither
-            # of the two common colours being in the same spot and the
-            # other two colours being unique from the the other two colours
-            # of the combo
-            for combination in combinations:
-                i = 0
-                flag = True
-                while i < len(combo):
-                    if combo[i] == combination[i]:
-                        flag = False
-                    i = i + 1
-                if self.common_elements(combo, combination) == colours_wrong_spot and flag:
-                    combinations_remaining.add(combination)
-
-        # Rest of the possibilities
-        else:
-            for combination in combinations:
-                if self.common_elements_same_spot(combo, combination) == colours_correct_spot and self.common_elements(combo, combination) == colours_correct_spot + colours_wrong_spot:
-                    combinations_remaining.add(combination)
-
-        return combinations_remaining
-
-    def common_elements(self, arr1: list, arr2: list) -> int:
-        # Count occurrences of each element in both arrays
-        counter1 = Counter(arr1)
-        counter2 = Counter(arr2)
-
-        # Calculate the intersection of keys (common elements)
-        common_keys = counter1.keys() & counter2.keys()
-
-        # Calculate the minimum occurrence of each common element
-        common_counts = {key: min(counter1[key], counter2[key])
-                            for key in common_keys}
-
-        # Sum up the counts of common elements
-        total_common_count = sum(common_counts.values())
-
-        return total_common_count
-
-    def common_elements_same_spot(self, arr1: list, arr2: list) -> int:
-        total_common_count = sum(x == y for x, y in zip(arr1, arr2))
-        return total_common_count
+    def calculate_information_with_hint(self, combo: tuple[int, ...], 
+                                      combinations: set[tuple[int, ...]], 
+                                      hint: tuple[int, ...]) -> float:
+        """Information given this specific hint occurred."""
+        possible = self.calculate_possible_combinations(combo, combinations, hint)
+        total = len(combinations)
+        if len(possible) == 0 or total == 0:
+            return 0.0
+        return math.log2(total / len(possible))
